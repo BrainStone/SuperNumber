@@ -40,20 +40,41 @@ template<typename integerType>
 SuperNumber<integerType>::SuperNumber(char value) : SuperNumber((unsigned long long)value) {}
 
 template<typename integerType>
-SuperNumber<integerType>::SuperNumber(double value) {
+SuperNumber<integerType>::SuperNumber(long double value) {
 	// TODO: Fill the value
 }
 
 template<typename integerType>
-SuperNumber<integerType>::SuperNumber(float value) : SuperNumber((double)value) {}
+SuperNumber<integerType>::SuperNumber(double value) : SuperNumber((long double)value) {}
+template<typename integerType>
+SuperNumber<integerType>::SuperNumber(float value) : SuperNumber((long double)value) {}
 
 template<typename integerType>
-SuperNumber<integerType>::SuperNumber(std::string value) {
-	// TODO: Fill the value
-}
+SuperNumber<integerType>::SuperNumber(std::string value, unsigned short radix) : SuperNumber(std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(value), radix) {}
+
+#include <iostream>
 
 template<typename integerType>
-SuperNumber<integerType>::SuperNumber(std::wstring value) {
+SuperNumber<integerType>::SuperNumber(std::wstring value, unsigned short radix) {
+	if (radix > 36) {
+		throw std::out_of_range("The radix was " + std::to_string(radix) + ". That is bigger than 36. The maxiumum radix.");
+	}
+	else if (radix < 2) {
+		throw std::out_of_range("The radix was " + std::to_string(radix) + ". That is less than 2. The minimum radix.");
+	}
+
+	std::map<wchar_t, short> allowedCharacters;
+
+	wchar_t i;
+	for (i = 0; i < 10; i++) {
+		allowedCharacters[L'0' + i] = i;
+	}
+	for (i = 10; i < radix; i++) {
+		allowedCharacters[L'7' + i] = i;
+		allowedCharacters[L'W' + i] = i;
+	}
+	allowedCharacters[L'.'] = -1;
+
 	// TODO: Fill the value
 }
 

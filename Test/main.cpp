@@ -9,8 +9,8 @@ int main() {
 	SuperNumber<long> test3(544);
 	SuperNumber<long long> test4(54.569);
 	SuperNumber<long long> test5(54.569F);
-	SuperNumber<long long> test6("54.569");
-	SuperNumber<long long> test7(L"54.569");
+	SuperNumber<long long> test6("54.569", 16);
+	SuperNumber<long long> test7(L"54.569", 36);
 
 	test2 = 1;
 	test3 = -1;

@@ -2,6 +2,10 @@
 #define __SUPERNUMBER_H__
 
 #include <string>
+#include <locale>
+#include <codecvt>
+#include <map>
+#include <stdexcept>
 
 template<typename integerType>
 class SuperNumber {
@@ -19,11 +23,12 @@ public:
 	SuperNumber(unsigned short value);
 	SuperNumber(char value);
 
+	SuperNumber(long double value);
 	SuperNumber(double value);
 	SuperNumber(float value);
 
-	SuperNumber(std::string value);
-	SuperNumber(std::wstring value);
+	SuperNumber(std::string value, unsigned short radix = 10);
+	SuperNumber(std::wstring value, unsigned short radix = 10);
 
 	SuperNumber();
 
