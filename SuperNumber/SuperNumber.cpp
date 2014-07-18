@@ -9,7 +9,7 @@ template<typename integerType>
 const size_t SuperNumber<integerType>::integerTypeBits = sizeof(integerType)* 8;
 
 template<typename integerType>
-const integerType SuperNumber<integerType>::minValue = std::numeric_limits<integerType>::min();
+const integerType SuperNumber<integerType>::minValue = std::numeric_limits<integerType>::lowest();
 template<typename integerType>
 const integerType SuperNumber<integerType>::maxValue = std::numeric_limits<integerType>::max();
 
@@ -169,9 +169,14 @@ const SuperNumber<integerType> operator-(SuperNumber<integerType> const& lhs, Su
 	return result;
 }
 
-/*template<typename integerType>
-const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
 template<typename integerType>
-const SuperNumber<integerType> operator/(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);*/
+const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	// TODO: Multiplication
+}
+
+template<typename integerType>
+const SuperNumber<integerType> operator/(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	// TODO: Multiplication
+}
 
 #endif
