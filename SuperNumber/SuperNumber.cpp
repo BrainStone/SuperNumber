@@ -8,6 +8,11 @@
 template<typename integerType>
 const size_t SuperNumber<integerType>::integerTypeBits = sizeof(integerType)* 8;
 
+template<typename integerType>
+const integerType SuperNumber<integerType>::minValue = std::numeric_limits<integerType>::min();
+template<typename integerType>
+const integerType SuperNumber<integerType>::maxValue = std::numeric_limits<integerType>::max();
+
 // Constructors
 
 template<typename integerType>
@@ -50,12 +55,12 @@ template<typename integerType>
 SuperNumber<integerType>::SuperNumber(float value) : SuperNumber((long double)value) {}
 
 template<typename integerType>
-SuperNumber<integerType>::SuperNumber(std::string value, unsigned short radix) : SuperNumber(std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(value), radix) {}
+SuperNumber<integerType>::SuperNumber(const std::string &value, unsigned short radix) : SuperNumber(std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(value), radix) {}
 
 #include <iostream>
 
 template<typename integerType>
-SuperNumber<integerType>::SuperNumber(std::wstring value, unsigned short radix) {
+SuperNumber<integerType>::SuperNumber(const std::wstring &value, unsigned short radix) {
 	if (radix > 36) {
 		throw std::out_of_range("The radix was " + std::to_string(radix) + ". That is bigger than 36. The maxiumum radix.");
 	}
@@ -79,7 +84,7 @@ SuperNumber<integerType>::SuperNumber(std::wstring value, unsigned short radix) 
 }
 
 template<typename integerType>
-SuperNumber<integerType>::SuperNumber() : value(0), power(0) {}
+SuperNumber<integerType>::SuperNumber() : value(0), power(minValue) {}
 
 // Destructor
 
@@ -94,7 +99,7 @@ template<typename integerType>
 void SuperNumber<integerType>::initializeFromUnsignedLongLong(unsigned long long value, bool negative) {
 	if (value == 0LL) {
 		this->value = 0;
-		this->power = 0;
+		this->power = minValue;
 	}
 	else {
 		integerType firstOneBit = 63;
@@ -106,5 +111,67 @@ void SuperNumber<integerType>::initializeFromUnsignedLongLong(unsigned long long
 			| (negative << (integerTypeBits - 1));
 	}
 }
+
+template<typename integerType>
+void SuperNumber<integerType>::normalizeNumber() {
+	if (value == 0LL) {
+		this->value = 0;
+		this->power = minValue;
+	}
+	else {
+		bool negative = value < 0;
+		value = (negative) ? -value : value;
+
+		integerType firstOneBit = integerTypeBits - 2;
+		for (; !(value >> firstOneBit); firstOneBit--) {}
+
+		power += firstOneBit - integerTypeBits + 2;
+		value = (integerType)(value << ((integerTypeBits - 2) - firstOneBit))
+			// Set negative flag
+			| (negative << (integerTypeBits - 1));
+	}
+}
+
+// Mathematical operations
+template<typename integerType>
+const SuperNumber<integerType> operator+(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	SuperNumber<integerType> result;
+
+	result.power = std::max(lhs.power, rhs.power);
+	integerType lhs_value = lhs.value >> (result.power - lhs.power);
+	integerType rhs_value = rhs.value >> (result.power - rhs.power);
+
+	result.value = lhs_value + rhs_value;
+
+	if ((result.value < lhs_value) || (result.value < rhs_value)) {
+		lhs_value >>= 1;
+		rhs_value >>= 1;
+
+		result.value = lhs_value + rhs_value;
+		result.power++;
+	}
+
+	return result;
+}
+
+template<typename integerType>
+const SuperNumber<integerType> operator-(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	SuperNumber<integerType> result;
+
+	result.power = std::max(lhs.power, rhs.power);
+	integerType lhs_value = lhs.value >> (result.power - lhs.power);
+	integerType rhs_value = rhs.value >> (result.power - rhs.power);
+
+	result.value = lhs_value - rhs_value;
+
+	result.normalizeNumber();
+
+	return result;
+}
+
+/*template<typename integerType>
+const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+template<typename integerType>
+const SuperNumber<integerType> operator/(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);*/
 
 #endif

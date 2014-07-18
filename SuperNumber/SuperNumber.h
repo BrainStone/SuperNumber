@@ -6,6 +6,8 @@
 #include <codecvt>
 #include <map>
 #include <stdexcept>
+#include <algorithm>
+#include <limits>
 
 template<typename integerType>
 class SuperNumber {
@@ -27,25 +29,53 @@ public:
 	SuperNumber(double value);
 	SuperNumber(float value);
 
-	SuperNumber(std::string value, unsigned short radix = 10);
-	SuperNumber(std::wstring value, unsigned short radix = 10);
+	SuperNumber(const std::string &value, unsigned short radix = 10);
+	SuperNumber(const std::wstring &value, unsigned short radix = 10);
 
 	SuperNumber();
 
 	// Public Destructor
 	~SuperNumber();
 
+	// Public Methods
+	std::string to_String() {
+		return std::to_string(value) + "\n" + std::to_string(power) + "\n" + std::to_string(value >> (-power)) + "\n";
+	}
+
+	// Public Friends
+	template<typename integerType>
+	friend const SuperNumber<integerType> operator+(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+	template<typename integerType>
+	friend const SuperNumber<integerType> operator-(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+	template<typename integerType>
+	friend const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+	template<typename integerType>
+	friend const SuperNumber<integerType> operator/(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+
 private:
 	// Private Static Fields
 	static const size_t integerTypeBits;
+	static const integerType minValue;
+	static const integerType maxValue;
 
 	// Private Methods
 	void initializeFromUnsignedLongLong(unsigned long long value, bool negative = false);
+	void normalizeNumber();
 
 	// Private Fields
 	integerType value;
 	integerType power;
 };
+
+// Mathematical operations
+template<typename integerType>
+const SuperNumber<integerType> operator+(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+template<typename integerType>
+const SuperNumber<integerType> operator-(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+template<typename integerType>
+const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+template<typename integerType>
+const SuperNumber<integerType> operator/(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
 
 // Template Class Hack
 #include "SuperNumber.cpp"
