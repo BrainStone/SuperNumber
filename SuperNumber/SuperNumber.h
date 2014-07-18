@@ -34,6 +34,10 @@ private:
 	// Private Static Fields
 	static const size_t integerTypeBits;
 
+	// Private Methods
+	void initializeFromUnsignedLongLong(unsigned long long value, bool negative = false);
+
+	// Private Fields
 	integerType value;
 	integerType power;
 };
