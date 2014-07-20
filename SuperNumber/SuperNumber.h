@@ -38,9 +38,12 @@ public:
 	~SuperNumber();
 
 	// Public Methods
-	std::string to_String() {
+	std::string to_String() const {
 		return std::to_string(value) + "\n" + std::to_string(power) + "\n" + std::to_string(value >> (-power)) + "\n";
 	}
+
+	const SuperNumber<integerType> operator+() const;
+	const SuperNumber<integerType> operator-() const;
 
 	// Public Friends
 	template<typename integerType>

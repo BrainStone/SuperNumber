@@ -33,9 +33,29 @@ int main() {
 	test8 = (SuperNumber<long long>(100) * SuperNumber<long long>(100));
 	cout << test8.to_String() << endl;
 
-	test8 = SuperNumber<long long>(123*321);
+	test8 = SuperNumber<long long>(-123*-321);
 	cout << test8.to_String() << endl;
 
-	test8 = (SuperNumber<long long>(123) * SuperNumber<long long>(321));
+	test8 = (SuperNumber<long long>(-123) * SuperNumber<long long>(-321));
 	cout << test8.to_String() << endl;
+
+	test1 = 100;
+	test2 = -100;
+	test3 = 10;
+	test4 = -10;
+
+	cout << 100 + 10 << endl << (test1 + test3).to_String() << endl;
+	cout << 100 + (-10) << endl << (test1 + test4).to_String() << endl;
+	cout << (-100) + 10 << endl << (test2 + test3).to_String() << endl;
+	cout << (-100) + (-10) << endl << (test2 + test4).to_String() << endl;
+
+	cout << 100 - 10 << endl << (test1 - test3).to_String() << endl;
+	cout << 100 - (-10) << endl << (test1 - test4).to_String() << endl;
+	cout << (-100) - 10 << endl << (test2 - test3).to_String() << endl;
+	cout << (-100) - (-10) << endl << (test2 - test4).to_String() << endl;
+
+	cout << 100 * 10 << endl << (test1 * test3).to_String() << endl;
+	cout << 100 * (-10) << endl << (test1 * test4).to_String() << endl;
+	cout << (-100) * 10 << endl << (test2 * test3).to_String() << endl;
+	cout << (-100) * (-10) << endl << (test2 * test4).to_String() << endl;
 }

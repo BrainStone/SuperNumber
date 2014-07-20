@@ -96,6 +96,20 @@ SuperNumber<integerType>::~SuperNumber()
 // Methods
 
 template<typename integerType>
+const SuperNumber<integerType> SuperNumber<integerType>::operator+() const {
+	return SuperNumber<integerType>(*this);
+}
+
+template<typename integerType>
+const SuperNumber<integerType> SuperNumber<integerType>::operator-() const {
+	SuperNumber<integerType> result(*this);
+
+	result.value = -result.value;
+
+	return result;
+}
+
+template<typename integerType>
 void SuperNumber<integerType>::initializeFromUnsignedLongLong(unsigned long long value, bool negative) {
 	if (value == 0LL) {
 		this->value = 0;
@@ -106,9 +120,8 @@ void SuperNumber<integerType>::initializeFromUnsignedLongLong(unsigned long long
 		for (; !(value >> firstOneBit); firstOneBit--) {}
 
 		this->power = firstOneBit - integerTypeBits + 2;
-		this->value = (integerType)(value << (integerType(63) - firstOneBit) >> (65 - integerTypeBits))
-			// Set negative flag
-			| (negative << (integerTypeBits - 1));
+		this->value = (integerType)(value << (integerType(63) - firstOneBit) >> (65 - integerTypeBits));
+		this->value = (negative) ? -this->value : this->value;
 	}
 }
 
@@ -126,20 +139,35 @@ void SuperNumber<integerType>::normalizeNumber() {
 		for (; !(value >> firstOneBit); firstOneBit--) {}
 
 		power += firstOneBit - integerTypeBits + 2;
-		value = (integerType)(value << ((integerTypeBits - 2) - firstOneBit))
-			// Set negative flag
-			| (negative << (integerTypeBits - 1));
+		value = (integerType)(value << ((integerTypeBits - 2) - firstOneBit));
+		value = (negative) ? -value : value;
 	}
 }
 
 // Mathematical operations
+
 template<typename integerType>
 const SuperNumber<integerType> operator+(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	SuperNumber<integerType> tmp_lhs(lhs);
+	SuperNumber<integerType> tmp_rhs(rhs);
+
+	bool negative_lhs = tmp_lhs.value < 0;
+	bool negative_rhs = tmp_rhs.value < 0;
+
+	tmp_lhs.value = (negative_lhs) ? -tmp_lhs.value : tmp_lhs.value;
+	tmp_rhs.value = (negative_rhs) ? -tmp_rhs.value : tmp_rhs.value;
+
+	if (negative_rhs ^ negative_lhs) {
+		return (negative_lhs) ? (tmp_rhs - tmp_lhs) : (tmp_lhs - tmp_rhs);
+	}
+
+	bool negative = negative_lhs && negative_rhs;
+
 	SuperNumber<integerType> result;
 
-	result.power = std::max(lhs.power, rhs.power);
-	integerType lhs_value = lhs.value >> (result.power - lhs.power);
-	integerType rhs_value = rhs.value >> (result.power - rhs.power);
+	result.power = std::max(tmp_lhs.power, tmp_rhs.power);
+	integerType lhs_value = tmp_lhs.value >> (result.power - tmp_lhs.power);
+	integerType rhs_value = tmp_rhs.value >> (result.power - tmp_rhs.power);
 
 	result.value = lhs_value + rhs_value;
 
@@ -151,35 +179,61 @@ const SuperNumber<integerType> operator+(SuperNumber<integerType> const& lhs, Su
 		result.power++;
 	}
 
-	return result;
+	return (negative) ? -result : result;
 }
 
 template<typename integerType>
 const SuperNumber<integerType> operator-(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	SuperNumber<integerType> tmp_lhs(lhs);
+	SuperNumber<integerType> tmp_rhs(rhs);
+
+	bool negative_lhs = tmp_lhs.value < 0;
+	bool negative_rhs = tmp_rhs.value < 0;
+
+	tmp_lhs.value = (negative_lhs) ? -tmp_lhs.value : tmp_lhs.value;
+	tmp_rhs.value = (negative_rhs) ? -tmp_rhs.value : tmp_rhs.value;
+
+	if (negative_rhs ^ negative_lhs) {
+		return (negative_lhs) ? -(tmp_lhs + tmp_rhs) : (tmp_lhs + tmp_rhs);
+	}
+
+	bool negative = negative_lhs && negative_rhs;
+
 	SuperNumber<integerType> result;
 
-	result.power = std::max(lhs.power, rhs.power);
-	integerType lhs_value = lhs.value >> (result.power - lhs.power);
-	integerType rhs_value = rhs.value >> (result.power - rhs.power);
+	result.power = std::max(tmp_lhs.power, tmp_rhs.power);
+	integerType lhs_value = tmp_lhs.value >> (result.power - tmp_lhs.power);
+	integerType rhs_value = tmp_rhs.value >> (result.power - tmp_rhs.power);
 
 	result.value = lhs_value - rhs_value;
 
 	result.normalizeNumber();
-	return result;
+	return (negative) ? -result : result;
 }
 
 template<typename integerType>
 const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	SuperNumber<integerType> tmp_lhs(lhs);
+	SuperNumber<integerType> tmp_rhs(rhs);
+
+	bool negative_lhs = tmp_lhs.value < 0;
+	bool negative_rhs = tmp_rhs.value < 0;
+
+	tmp_lhs.value = (negative_lhs) ? -tmp_lhs.value : tmp_lhs.value;
+	tmp_rhs.value = (negative_rhs) ? -tmp_rhs.value : tmp_rhs.value;
+
+	bool negative = negative_lhs ^ negative_rhs;
+
 	SuperNumber<integerType> result;
 
-	result.power = lhs.power + rhs.power + SuperNumber<integerType>::integerTypeBits - 2;
+	result.power = (tmp_lhs.power + tmp_rhs.power) + (SuperNumber<integerType>::integerTypeBits - 2);
 
 	integerType bitLimit = SuperNumber<integerType>::integerTypeBits - 2;
 	integerType tmpAddition;
 
 	for (integerType i = bitLimit; i >= 0; i--) {
-		if ((rhs.value >> i) & 1) {
-			tmpAddition = lhs.value >> (bitLimit - i);
+		if ((tmp_rhs.value >> i) & 1) {
+			tmpAddition = tmp_lhs.value >> (bitLimit - i);
 
 			result.value += tmpAddition;
 
@@ -196,7 +250,7 @@ const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, Su
 	}
 
 	result.normalizeNumber();
-	return result;
+	return (negative) ? -result : result;
 }
 
 template<typename integerType>
