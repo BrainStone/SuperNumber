@@ -30,6 +30,12 @@ int main() {
 	test8 = SuperNumber<long long>(10000);
 	cout << test8.to_String() << endl;
 
-	test8 = (SuperNumber<long long>(100) * SuperNumber<long long>(100));// +test3;
+	test8 = (SuperNumber<long long>(100) * SuperNumber<long long>(100));
+	cout << test8.to_String() << endl;
+
+	test8 = SuperNumber<long long>(123*321);
+	cout << test8.to_String() << endl;
+
+	test8 = (SuperNumber<long long>(123) * SuperNumber<long long>(321));
 	cout << test8.to_String() << endl;
 }

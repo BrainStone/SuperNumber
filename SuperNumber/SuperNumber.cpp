@@ -170,22 +170,26 @@ const SuperNumber<integerType> operator-(SuperNumber<integerType> const& lhs, Su
 
 template<typename integerType>
 const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
-	// TODO: Not working yet!
 	SuperNumber<integerType> result;
 
-	result.power = (lhs.power + rhs.power)/* + (SuperNumber<integerType>::integerTypeBits)*/;
+	result.power = lhs.power + rhs.power + SuperNumber<integerType>::integerTypeBits - 2;
 
-	int bitLimit = SuperNumber<integerType>::integerTypeBits - 2;
-	for (int i = bitLimit; i >= 0; i--) {
+	integerType bitLimit = SuperNumber<integerType>::integerTypeBits - 2;
+	integerType tmpAddition;
+
+	for (integerType i = bitLimit; i >= 0; i--) {
 		if ((rhs.value >> i) & 1) {
-			result.value += lhs.value >> (bitLimit - i);
+			tmpAddition = lhs.value >> (bitLimit - i);
 
-			if (result.value < lhs.value) {
-				result.value -= lhs.value >> (bitLimit - i);
+			result.value += tmpAddition;
+
+			if (result.value < tmpAddition) {
+				result.value -= tmpAddition;
+
+				result.value >>= 1;
+				result.value += (tmpAddition >> 1);
 
 				bitLimit++;
-
-				result.value += lhs.value >> (bitLimit - i);
 				result.power++;
 			}
 		}
