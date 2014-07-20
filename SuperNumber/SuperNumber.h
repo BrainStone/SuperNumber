@@ -65,6 +65,16 @@ public:
 	template<typename integerType>
 	friend bool operator!=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
 
+	template<typename integerType>
+	friend bool operator<(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+	template<typename integerType>
+	friend bool operator<=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+	template<typename integerType>
+	friend bool operator>(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+	template<typename integerType>
+	friend bool operator>=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+
+
 private:
 	// Private Static Fields
 	static const size_t integerTypeBits;
@@ -94,6 +104,15 @@ template<typename integerType>
 bool operator==(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
 template<typename integerType>
 bool operator!=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+
+template<typename integerType>
+bool operator<(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+template<typename integerType>
+bool operator<=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+template<typename integerType>
+bool operator>(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
+template<typename integerType>
+bool operator>=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs);
 
 // Template Class Hack
 #include "SuperNumber.cpp"

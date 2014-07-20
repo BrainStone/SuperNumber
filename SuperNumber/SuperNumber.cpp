@@ -343,4 +343,34 @@ bool operator!=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> co
 	return (lhs.value != rhs.value) || (lhs.power != rhs.power);
 }
 
+template<typename integerType>
+bool operator<(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	if (lhs.power == rhs.power) {
+		return lhs.value < rhs.value;
+	}
+	else {
+		return lhs.power < rhs.power;
+	}
+}
+
+template<typename integerType>
+bool operator<=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	if (lhs.power == rhs.power) {
+		return lhs.value <= rhs.value;
+	}
+	else {
+		return lhs.power < rhs.power;
+	}
+}
+
+template<typename integerType>
+bool operator>(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	return rhs < lhs;
+}
+
+template<typename integerType>
+bool operator>=(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
+	return rhs <= lhs;
+}
+
 #endif
