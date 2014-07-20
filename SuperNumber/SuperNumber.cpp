@@ -165,13 +165,34 @@ const SuperNumber<integerType> operator-(SuperNumber<integerType> const& lhs, Su
 	result.value = lhs_value - rhs_value;
 
 	result.normalizeNumber();
-
 	return result;
 }
 
 template<typename integerType>
 const SuperNumber<integerType> operator*(SuperNumber<integerType> const& lhs, SuperNumber<integerType> const& rhs) {
-	// TODO: Multiplication
+	// TODO: Not working yet!
+	SuperNumber<integerType> result;
+
+	result.power = (lhs.power + rhs.power)/* + (SuperNumber<integerType>::integerTypeBits)*/;
+
+	int bitLimit = SuperNumber<integerType>::integerTypeBits - 2;
+	for (int i = bitLimit; i >= 0; i--) {
+		if ((rhs.value >> i) & 1) {
+			result.value += lhs.value >> (bitLimit - i);
+
+			if (result.value < lhs.value) {
+				result.value -= lhs.value >> (bitLimit - i);
+
+				bitLimit++;
+
+				result.value += lhs.value >> (bitLimit - i);
+				result.power++;
+			}
+		}
+	}
+
+	result.normalizeNumber();
+	return result;
 }
 
 template<typename integerType>
