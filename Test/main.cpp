@@ -10,7 +10,7 @@ int main() {
 	SuperNumber<long long> test4(54.569);
 	SuperNumber<long long> test5(54.569F);
 	SuperNumber<long long> test6("54.569", 16);
-	SuperNumber<long long> test7(L"54.569", 36);
+	SuperNumber<long long> test7(L"54.569", 21);
 
 	SuperNumber<long long> test8 = test2 + test3;
 	cout << test8.to_String() << endl;
@@ -33,11 +33,9 @@ int main() {
 	test8 = (SuperNumber<long long>(100) * SuperNumber<long long>(100));
 	cout << test8.to_String() << endl;
 
-	test8 = SuperNumber<long long>(-123*-321);
-	cout << test8.to_String() << endl;
+	cout << SuperNumber<long>(-123 * -321).to_String() << endl;
 
-	test8 = (SuperNumber<long long>(-123) * SuperNumber<long long>(-321));
-	cout << test8.to_String() << endl;
+	cout << (SuperNumber<long>(-123) * SuperNumber<long>(-321)).to_String() << endl;
 
 	test1 = 100;
 	test2 = -100;
@@ -58,4 +56,12 @@ int main() {
 	cout << 100 * (-10) << endl << (test1 * test4).to_String() << endl;
 	cout << (-100) * 10 << endl << (test2 * test3).to_String() << endl;
 	cout << (-100) * (-10) << endl << (test2 * test4).to_String() << endl;
+
+	cout << 100 / 10 << endl << (test1 / test3).to_String() << endl;
+	cout << 100 / (-10) << endl << (test1 / test4).to_String() << endl;
+	cout << (-100) / 10 << endl << (test2 / test3).to_String() << endl;
+	cout << (-100) / (-10) << endl << (test2 / test4).to_String() << endl;
+
+	cout << test6.to_String() << endl;
+	cout << test7.to_String() << endl;
 }
